@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Patronage2016WP.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -26,29 +28,73 @@ namespace Patronage2016WP
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        ObservableCollection<StorageFile> images;
+        BackgroundWorker worker;
+
         public MainPage()
         {
             this.InitializeComponent();
+            worker = new BackgroundWorker();
+            worker.DoWork += Worker_DoWork;
+            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+        }
+
+        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Result != null && e.Result is BackgroundWorkerResult)
+            {
+                var result = e.Result as BackgroundWorkerResult;
+                if (!String.IsNullOrEmpty(result.ErrorMessage))
+                {
+                    ShowErrorMessage(result.ErrorMessage);
+                }
+                
+            }
+            else
+            {
+                var image = images.FirstOrDefault();
+                if (image == null)
+                {
+                    ShowErrorMessage("There is no picture in library.");
+                }
+                else
+                {
+                    SetImageSource(image);
+                    ImageToShow.Visibility = Visibility.Visible;
+                    Information.Visibility = Visibility.Collapsed;
+                }
+            }
+            ImagesLoading.Visibility = Visibility.Collapsed;
+            ImagesLoading.IsActive = false;
+        }
+
+        private async void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                images = new ObservableCollection<StorageFile>();
+                StorageFolder folder = KnownFolders.PicturesLibrary;
+
+                await GetAllImages(images, folder);
+            }
+            catch(Exception ex)
+            {
+                BackgroundWorkerResult bwr = new BackgroundWorkerResult();
+                bwr.ErrorMessage = ex.Message;
+                e.Result = bwr;
+            }
+            
         }
 
         private async void DownloadButtonClick(object sender, RoutedEventArgs e)
         {
-            var images = new ObservableCollection<StorageFile>();
+            ImagesLoading.Visibility = Visibility.Visible;
+            ImagesLoading.IsActive = true;
 
-            try
-            {
-                StorageFolder folder = KnownFolders.PicturesLibrary;
+            Information.Visibility = Visibility.Collapsed;
+            ImageToShow.Visibility = Visibility.Collapsed;
 
-                await GetAllImages(images, folder);
-                SetImageSource(images.First());
-                ImageToShow.Visibility = Visibility.Visible;
-                Information.Visibility = Visibility.Collapsed;
-            }
-            catch (Exception ex)
-            {
-                Information.Text = ex.Message;
-            }
-            
+            worker.RunWorkerAsync();
         }
 
         private async void SetImageSource(StorageFile image)
@@ -64,7 +110,7 @@ namespace Patronage2016WP
         {
             foreach (var item in await folder.GetFilesAsync())
             {
-                if (item.FileType == ".jpg" || item.FileType == ".png" || item.FileType == ".bmp")
+                if (item.FileType == ".jpg" || item.FileType == ".jpeg" || item.FileType == ".png" || item.FileType == ".bmp")
                 {
                     list.Add(item);
                 }
@@ -74,6 +120,12 @@ namespace Patronage2016WP
             {
                 await GetAllImages(list, item);
             }
+        }
+
+        private void ShowErrorMessage(string message)
+        {
+            Information.Text = message;
+            Information.Visibility = Visibility.Visible;
         }
     }
 }
