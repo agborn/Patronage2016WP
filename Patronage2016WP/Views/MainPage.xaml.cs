@@ -28,64 +28,14 @@ namespace Patronage2016WP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        ObservableCollection<StorageFile> images;
-        BackgroundWorker worker;
+        List<StorageFile> images;
+        StorageFile currentImage;
 
         public MainPage()
         {
             this.InitializeComponent();
-            worker = new BackgroundWorker();
-            worker.DoWork += Worker_DoWork;
-            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
         }
-
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Result != null && e.Result is BackgroundWorkerResult)
-            {
-                var result = e.Result as BackgroundWorkerResult;
-                if (!String.IsNullOrEmpty(result.ErrorMessage))
-                {
-                    ShowErrorMessage(result.ErrorMessage);
-                }
-                
-            }
-            else
-            {
-                var image = images.FirstOrDefault();
-                if (image == null)
-                {
-                    ShowErrorMessage("There is no picture in library.");
-                }
-                else
-                {
-                    SetImageSource(image);
-                    ImageToShow.Visibility = Visibility.Visible;
-                    Information.Visibility = Visibility.Collapsed;
-                }
-            }
-            ImagesLoading.Visibility = Visibility.Collapsed;
-            ImagesLoading.IsActive = false;
-        }
-
-        private async void Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            try
-            {
-                images = new ObservableCollection<StorageFile>();
-                StorageFolder folder = KnownFolders.PicturesLibrary;
-
-                await GetAllImages(images, folder);
-            }
-            catch(Exception ex)
-            {
-                BackgroundWorkerResult bwr = new BackgroundWorkerResult();
-                bwr.ErrorMessage = ex.Message;
-                e.Result = bwr;
-            }
-            
-        }
-
+        
         private async void DownloadButtonClick(object sender, RoutedEventArgs e)
         {
             ImagesLoading.Visibility = Visibility.Visible;
@@ -94,7 +44,32 @@ namespace Patronage2016WP
             Information.Visibility = Visibility.Collapsed;
             ImageToShow.Visibility = Visibility.Collapsed;
 
-            worker.RunWorkerAsync();
+            try
+            {
+                images = new List<StorageFile>();
+                StorageFolder folder = KnownFolders.PicturesLibrary;
+
+                await GetAllImages(images, folder);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message);
+            }
+
+            currentImage = images.FirstOrDefault();
+            if (currentImage == null)
+            {
+                ShowErrorMessage("There is no picture in the library.");
+            }
+            else
+            {
+                SetImageSource(currentImage);
+                ImageToShow.Visibility = Visibility.Visible;
+                Information.Visibility = Visibility.Collapsed;
+            }
+
+            ImagesLoading.Visibility = Visibility.Collapsed;
+            ImagesLoading.IsActive = false;
         }
 
         private async void SetImageSource(StorageFile image)
@@ -106,7 +81,7 @@ namespace Patronage2016WP
             ImageToShow.Source = bitmapImage;
         }
 
-        private async Task GetAllImages(ObservableCollection<StorageFile> list, StorageFolder folder)
+        private async Task GetAllImages(List<StorageFile> list, StorageFolder folder)
         {
             foreach (var item in await folder.GetFilesAsync())
             {
@@ -126,6 +101,22 @@ namespace Patronage2016WP
         {
             Information.Text = message;
             Information.Visibility = Visibility.Visible;
+            ImageToShow.Visibility = Visibility.Collapsed;
+        }
+
+        private void ChangeImage(object sender, TappedRoutedEventArgs e)
+        {
+            int index = images.IndexOf(currentImage);
+            int nextIndex = index + 1;
+            if (nextIndex < images.Count && (currentImage = images[nextIndex]) != null)
+            {
+                SetImageSource(currentImage);
+            }
+            else
+            {
+                ShowErrorMessage("There are no more pictures in the library.");
+                //MESSAGEBOX Z INFO O KONCU KOLEKCJI, KOLEJKA LECI OD POCZATKU
+            }
         }
     }
 }

@@ -13,7 +13,8 @@
             Name="ImageToShow"
             HorizontalAlignment="Center" 
             VerticalAlignment="Center" 
-            Visibility="Collapsed" />
+            Visibility="Collapsed" Tapped="ChangeImage"
+            />
         <TextBlock
             Name="Information"
             HorizontalAlignment="Center" 
