@@ -1,5 +1,4 @@
-﻿using Patronage2016WP.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.Storage.FileProperties;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -42,7 +42,7 @@ namespace Patronage2016WP
             ImagesLoading.IsActive = true;
 
             Information.Visibility = Visibility.Collapsed;
-            ImageToShow.Visibility = Visibility.Collapsed;
+            ImagePanel.Visibility = Visibility.Collapsed;
 
             try
             {
@@ -64,7 +64,7 @@ namespace Patronage2016WP
             else
             {
                 SetImageSource(currentImage);
-                ImageToShow.Visibility = Visibility.Visible;
+                ImagePanel.Visibility = Visibility.Visible;
                 Information.Visibility = Visibility.Collapsed;
             }
 
@@ -77,8 +77,13 @@ namespace Patronage2016WP
             var stream = await image.OpenReadAsync();
             var bitmapImage = new BitmapImage();
             bitmapImage.SetSource(stream);
-
             ImageToShow.Source = bitmapImage;
+
+            ImageProperties imageProperties = await image.Properties.GetImagePropertiesAsync();
+            Size.Text = "Size: " + imageProperties.Width + " x " + imageProperties.Height;
+            Date.Text = "Date: " + (imageProperties.DateTaken.ToString().Substring(0, 8) == "1/1/1601" ? image.DateCreated.ToString() : imageProperties.DateTaken.ToString());
+            Longitude.Text = imageProperties.Longitude.HasValue ? "Longitude: " + imageProperties.Longitude.Value.ToString() : "Longitude: no information";
+            Latitude.Text = imageProperties.Latitude.HasValue ? "Latitude: " + imageProperties.Latitude.Value.ToString() : "Latitude: no information";
         }
 
         private async Task GetAllImages(List<StorageFile> list, StorageFolder folder)
@@ -101,22 +106,20 @@ namespace Patronage2016WP
         {
             Information.Text = message;
             Information.Visibility = Visibility.Visible;
-            ImageToShow.Visibility = Visibility.Collapsed;
+            ImagePanel.Visibility = Visibility.Collapsed;
         }
 
-        private void ChangeImage(object sender, TappedRoutedEventArgs e)
+        private async void ChangeImage(object sender, TappedRoutedEventArgs e)
         {
             int index = images.IndexOf(currentImage);
             int nextIndex = index + 1;
-            if (nextIndex < images.Count && (currentImage = images[nextIndex]) != null)
+            if (nextIndex >= images.Count || (currentImage = images[nextIndex]) == null)
             {
-                SetImageSource(currentImage);
+                var dialog = new Windows.UI.Popups.MessageDialog("There are no more pictures in the library.");
+                await dialog.ShowAsync();
+                currentImage = images.First();
             }
-            else
-            {
-                ShowErrorMessage("There are no more pictures in the library.");
-                //MESSAGEBOX Z INFO O KONCU KOLEKCJI, KOLEJKA LECI OD POCZATKU
-            }
+            SetImageSource(currentImage);
         }
     }
 }

@@ -9,12 +9,28 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ProgressRing Name="ImagesLoading" />
-        <Image 
-            Name="ImageToShow"
-            HorizontalAlignment="Center" 
-            VerticalAlignment="Center" 
-            Visibility="Collapsed" Tapped="ChangeImage"
-            />
+        <Grid Name="ImagePanel" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image 
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Name="ImageToShow"
+                HorizontalAlignment="Center" 
+                Stretch="UniformToFill"
+                Tapped="ChangeImage"/>
+            <TextBlock Name="Size" Grid.Row="1" />
+            <TextBlock Name="Date" Grid.Row="2" />
+            <TextBlock Name="Longitude" Grid.Row="1" Grid.Column="1" />
+            <TextBlock Name="Latitude" Grid.Row="2" Grid.Column="1" />
+        </Grid>
         <TextBlock
             Name="Information"
             HorizontalAlignment="Center" 
