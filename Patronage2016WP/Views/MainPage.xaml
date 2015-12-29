@@ -46,6 +46,7 @@
     <Page.BottomAppBar>
         <CommandBar >
             <AppBarButton Click="DownloadButtonClick" Icon="Download" Label="Get Image" />
+            <AppBarButton Click="TakePhotoButtonClick" Icon="Camera" Label="Take new photo" />
         </CommandBar>
     </Page.BottomAppBar>
 </Page>

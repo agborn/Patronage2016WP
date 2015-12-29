@@ -8,8 +8,10 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
+using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -72,6 +74,41 @@ namespace Patronage2016WP
             ImagesLoading.IsActive = false;
         }
 
+        private async void TakePhotoButtonClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CameraCaptureUI dialog = new CameraCaptureUI();
+                StorageFile file = await dialog.CaptureFileAsync(CameraCaptureUIMode.Photo);
+
+                if (file != null)
+                {
+                    var savePicker = new FileSavePicker();
+                    savePicker.FileTypeChoices.Add("JPEG-Image", new List<string>() { ".jpg" });
+                    savePicker.SuggestedSaveFile = file;
+                    savePicker.SuggestedFileName = file.Name;
+                    savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+                    var savedFile = await savePicker.PickSaveFileAsync();
+                    
+                    if (savedFile != null)
+                    {
+                        CachedFileManager.DeferUpdates(savedFile);
+                        await file.MoveAndReplaceAsync(savedFile);
+                        Windows.Storage.Provider.FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(savedFile);
+
+                        if (status == Windows.Storage.Provider.FileUpdateStatus.Complete && images != null)
+                        {
+                            images.Add(savedFile);
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
         private async void SetImageSource(StorageFile image)
         {
             var stream = await image.OpenReadAsync();
@@ -113,12 +150,20 @@ namespace Patronage2016WP
         {
             int index = images.IndexOf(currentImage);
             int nextIndex = index + 1;
-            if (nextIndex >= images.Count || (currentImage = images[nextIndex]) == null)
+
+            if ((currentImage = images[nextIndex]) == null)
+            {
+                images.Remove(currentImage);
+                nextIndex = nextIndex + 1;
+            }
+
+            if (nextIndex >= images.Count)
             {
                 var dialog = new Windows.UI.Popups.MessageDialog("There are no more pictures in the library.");
                 await dialog.ShowAsync();
                 currentImage = images.First();
             }
+
             SetImageSource(currentImage);
         }
     }
