@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Patronage2016WP.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -37,7 +38,8 @@ namespace Patronage2016WP
         {
             this.InitializeComponent();
         }
-        
+
+        // THIS METHOD IS NO LONGER NESSESARY IN TASK 3
         private async void DownloadButtonClick(object sender, RoutedEventArgs e)
         {
             ImagesLoading.Visibility = Visibility.Visible;
@@ -51,7 +53,7 @@ namespace Patronage2016WP
                 images = new List<StorageFile>();
                 StorageFolder folder = KnownFolders.PicturesLibrary;
 
-                await GetAllImages(images, folder);
+                await RetrievingImagesService.GetAllImages(images, folder);
             }
             catch (Exception ex)
             {
@@ -122,23 +124,7 @@ namespace Patronage2016WP
             Longitude.Text = imageProperties.Longitude.HasValue ? "Longitude: " + imageProperties.Longitude.Value.ToString() : "Longitude: no information";
             Latitude.Text = imageProperties.Latitude.HasValue ? "Latitude: " + imageProperties.Latitude.Value.ToString() : "Latitude: no information";
         }
-
-        private async Task GetAllImages(List<StorageFile> list, StorageFolder folder)
-        {
-            foreach (var item in await folder.GetFilesAsync())
-            {
-                if (item.FileType == ".jpg" || item.FileType == ".jpeg" || item.FileType == ".png" || item.FileType == ".bmp")
-                {
-                    list.Add(item);
-                }
-            }
-
-            foreach (var item in await folder.GetFoldersAsync())
-            {
-                await GetAllImages(list, item);
-            }
-        }
-
+        
         private void ShowErrorMessage(string message)
         {
             Information.Text = message;

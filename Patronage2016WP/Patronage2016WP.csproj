@@ -98,6 +98,14 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\BaseObservableObject.cs" />
+    <Compile Include="Common\RelayCommand.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\ThumbnailToImageConverter.cs" />
+    <Compile Include="Model\ImageElement.cs" />
+    <Compile Include="Services\NavigationService.cs" />
+    <Compile Include="Services\RetrievingImagesService.cs" />
+    <Compile Include="ViewModels\ListOfPhotosViewModel.cs" />
     <Compile Include="Views\ListOfPhotosView.xaml.cs">
       <DependentUpon>ListOfPhotosView.xaml</DependentUpon>
     </Compile>
@@ -136,6 +144,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

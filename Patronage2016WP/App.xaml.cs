@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Patronage2016WP.Services;
+using Patronage2016WP.Views;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -60,6 +62,7 @@ namespace Patronage2016WP
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
+                new NavigationService().RegisterRootFrame(rootFrame);
             }
 
             if (rootFrame.Content == null)
@@ -67,7 +70,7 @@ namespace Patronage2016WP
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                rootFrame.Navigate(typeof(ListOfPhotosView), e.Arguments);
             }
             // Ensure the current window is active
             Window.Current.Activate();

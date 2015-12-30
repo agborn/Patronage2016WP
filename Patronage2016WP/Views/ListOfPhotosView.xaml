@@ -1,0 +1,29 @@
+﻿<Page
+    x:Class="Patronage2016WP.Views.ListOfPhotosView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Patronage2016WP.Views"
+    xmlns:localconv="using:Patronage2016WP.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <localconv:ThumbnailToImageConverter x:Key="ThumbnailToImageConverter" />
+        <localconv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <TextBlock Text="{Binding Message}" Visibility="{Binding IsMessageVisible, Converter={StaticResource BoolToVisibilityConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20,0,20,0" />
+        <ListView ItemsSource="{Binding ListOfImages}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding Thumbnail, Converter={StaticResource ThumbnailToImageConverter}}" />
+                        <TextBlock Text="{Binding Name}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Page>
