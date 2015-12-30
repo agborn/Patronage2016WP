@@ -2,25 +2,13 @@
 using Patronage2016WP.Model;
 using Patronage2016WP.Services;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.Storage.FileProperties;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace Patronage2016WP.ViewModels
 {
     public class ListOfPhotosViewModel : BaseObservableObject
     {
-        private NavigationService NavigationService = new NavigationService();
-
-        public ListOfPhotosViewModel()
-        {
-            LoadImages();
-        }
+        private NavigationService navigationService = new NavigationService();
         
         private ObservableCollection<ImageElement> listOfImages;
         public ObservableCollection<ImageElement> ListOfImages
@@ -32,7 +20,7 @@ namespace Patronage2016WP.ViewModels
             set
             {
                 listOfImages = value;
-                RefreshImagesData();
+                RaisePropertyChanged("ListOfImages");
             }
         }
 
@@ -65,36 +53,45 @@ namespace Patronage2016WP.ViewModels
             }
         }
 
-        private async void LoadImages()
+        private RelayCommand<object> showDetailsOfSelectedImage;
+        public RelayCommand<object> ShowDetailsOfSelectedImage
+        {
+            get
+            {
+                return showDetailsOfSelectedImage ?? (showDetailsOfSelectedImage = new RelayCommand<object>(GoToDetails));
+            }
+        }
+
+        private RelayCommand<object> loadPage;
+        public RelayCommand<object> LoadPage
+        {
+            get
+            {
+                return loadPage ?? (loadPage = new RelayCommand<object>(LoadListOfImages));
+            }
+        }
+
+        private void GoToDetails(object obj)
+        {
+            var image = obj as ImageElement;
+            if (image != null)
+            {
+                navigationService.Navigate(typeof(ImageDetailsView), image);
+            }
+        }
+
+        private async void LoadListOfImages(object obj)
         {
             try
             {
-                List<StorageFile> images = new List<StorageFile>();
-                StorageFolder folder = KnownFolders.PicturesLibrary;
-
-                await RetrievingImagesService.GetAllImages(images, folder);
-
-                listOfImages = new ObservableCollection<ImageElement>();
-                foreach (var image in images)
-                {
-                    var stream = await image.OpenReadAsync();
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.SetSource(stream);
-                    StorageItemThumbnail thumbnail = await image.GetThumbnailAsync(ThumbnailMode.PicturesView);
-                    listOfImages.Add(new ImageElement { Name = image.Name.Substring(0, image.Name.IndexOf('.')), Source = bitmapImage, Thumbnail = thumbnail });
-                }
-
-                RefreshImagesData();
+                await RetrievingImagesService.LoadCollectionOfImageElements();
+                ListOfImages = RetrievingImagesService.Images;
+                Message = string.Empty;
             }
             catch (Exception ex)
             {
                 Message = ex.Message;
             }
-        }
-
-        private void RefreshImagesData()
-        {
-            RaisePropertyChanged("ListOfImages");
         }
     }
 }

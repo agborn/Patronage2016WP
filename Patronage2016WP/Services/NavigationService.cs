@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Patronage2016WP.Services
@@ -19,6 +20,16 @@ namespace Patronage2016WP.Services
         public void Navigate(Type type)
         {
             rootFrame.Navigate(type);
+        }
+
+        public void Navigate(Type type, object parameter)
+        {
+            rootFrame.Navigate(type, parameter);
+        }
+
+        public void GoBack()
+        {
+            ((Frame)Window.Current.Content).GoBack();
         }
     }
 }

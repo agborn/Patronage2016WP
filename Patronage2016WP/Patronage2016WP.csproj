@@ -101,16 +101,18 @@
     <Compile Include="Common\BaseObservableObject.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\NegativeBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="Model\ImageElement.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\RetrievingImagesService.cs" />
+    <Compile Include="ViewModels\ImageDetailsViewModel.cs" />
     <Compile Include="ViewModels\ListOfPhotosViewModel.cs" />
     <Compile Include="Views\ListOfPhotosView.xaml.cs">
       <DependentUpon>ListOfPhotosView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
+    <Compile Include="Views\ImageDetailsView.xaml.cs">
+      <DependentUpon>ImageDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -139,12 +141,16 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainPage.xaml">
+    <Page Include="Views\ImageDetailsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <SDKReference Include="BehaviorsXamlSDKManaged, Version=12.0">
+      <Name>Behaviors SDK %28XAML%29</Name>
+    </SDKReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

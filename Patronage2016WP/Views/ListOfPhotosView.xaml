@@ -6,7 +6,15 @@
     xmlns:localconv="using:Patronage2016WP.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d">
+
+    <i:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <core:InvokeCommandAction Command="{Binding LoadPage}" />
+        </core:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
 
     <Page.Resources>
         <localconv:ThumbnailToImageConverter x:Key="ThumbnailToImageConverter" />
@@ -15,7 +23,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <TextBlock Text="{Binding Message}" Visibility="{Binding IsMessageVisible, Converter={StaticResource BoolToVisibilityConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20,0,20,0" />
-        <ListView ItemsSource="{Binding ListOfImages}">
+        <ListView ItemsSource="{Binding ListOfImages}" Name="Images">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -24,6 +32,11 @@
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
+            <i:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="SelectionChanged">
+                    <core:InvokeCommandAction Command="{Binding ShowDetailsOfSelectedImage}" CommandParameter="{Binding ElementName=Images, Path=SelectedItem}"/>
+                </core:EventTriggerBehavior>
+            </i:Interaction.Behaviors>
         </ListView>
     </Grid>
 </Page>
