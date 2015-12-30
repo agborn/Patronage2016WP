@@ -84,8 +84,8 @@ namespace Patronage2016WP.ViewModels
         {
             try
             {
-                await RetrievingImagesService.LoadCollectionOfImageElements();
-                ListOfImages = RetrievingImagesService.Images;
+                await ImageManagementService.LoadCollectionOfImageElements();
+                ListOfImages = ImageManagementService.Images;
                 Message = string.Empty;
             }
             catch (Exception ex)

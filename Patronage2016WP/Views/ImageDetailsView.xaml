@@ -50,6 +50,7 @@
         <CommandBar>
             <AppBarButton Command="{Binding TakePhoto}" Icon="Camera" Label="Take new photo" />
             <AppBarButton Command="{Binding GoBack}" Icon="Back" Label="Go back" />
+            <AppBarButton Command="{Binding Share}" Icon="Send" Label="Share" />
         </CommandBar>
     </Page.BottomAppBar>
 </Page>

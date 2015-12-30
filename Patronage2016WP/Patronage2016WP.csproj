@@ -105,7 +105,8 @@
     <Compile Include="Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="Model\ImageElement.cs" />
     <Compile Include="Services\NavigationService.cs" />
-    <Compile Include="Services\RetrievingImagesService.cs" />
+    <Compile Include="Services\ImageManagementService.cs" />
+    <Compile Include="Services\ShareService.cs" />
     <Compile Include="ViewModels\ImageDetailsViewModel.cs" />
     <Compile Include="ViewModels\ListOfPhotosViewModel.cs" />
     <Compile Include="Views\ListOfPhotosView.xaml.cs">

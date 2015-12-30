@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
@@ -11,7 +9,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Patronage2016WP.Services
 {
-    public class RetrievingImagesService
+    public class ImageManagementService
     {
         public static ObservableCollection<ImageElement> Images;
 
@@ -45,6 +43,7 @@ namespace Patronage2016WP.Services
 
             Images.Add(new ImageElement
             {
+                File = image,
                 Name = image.Name.Substring(0, image.Name.IndexOf('.')),
                 Source = bitmapImage,
                 Thumbnail = thumbnail,
