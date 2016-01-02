@@ -6,8 +6,11 @@ namespace Patronage2016WP.Services
 {
     public class NavigationService
     {
-        private static Frame rootFrame;
+        #region Private Fields
+        private static Frame rootFrame; 
+        #endregion
 
+        #region Public Methods
         public void RegisterRootFrame(Frame frame)
         {
             rootFrame = frame;
@@ -26,6 +29,7 @@ namespace Patronage2016WP.Services
         public void GoBack()
         {
             ((Frame)Window.Current.Content).GoBack();
-        }
+        } 
+        #endregion
     }
 }

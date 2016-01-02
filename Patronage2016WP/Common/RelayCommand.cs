@@ -6,16 +6,13 @@ namespace Patronage2016WP.Common
     public class RelayCommand<T> : ICommand
     {
         #region Fields
-
         private readonly Action<T> _execute = null;
         private readonly Predicate<T> _canExecute = null;
 
         public event EventHandler CanExecuteChanged;
-
         #endregion
 
         #region Constructors
-
         /// <summary>
         /// Creates a new command that can always execute.
         /// </summary>
@@ -38,11 +35,9 @@ namespace Patronage2016WP.Common
             _execute = execute;
             _canExecute = canExecute;
         }
-
         #endregion
 
         #region ICommand Members
-
         public bool CanExecute(object parameter)
         {
             return _canExecute == null ? true : _canExecute((T)parameter);
@@ -58,7 +53,6 @@ namespace Patronage2016WP.Common
         {
             _execute((T)parameter);
         }
-
         #endregion
     }
 }

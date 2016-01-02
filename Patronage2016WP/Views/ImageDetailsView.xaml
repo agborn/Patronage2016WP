@@ -16,19 +16,31 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid Visibility="{Binding IsMessageVisible, Converter={StaticResource NegativeBoolToVisibilityConverter}}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="wideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="narrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="InformationStack.Orientation" Value="Vertical"/>
+                        <Setter Target="LongitudeDetails.Margin" Value="0,0,0,0"/>
+                        <Setter Target="LatitudeDetails.Margin" Value="0,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
             <Image 
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
                 Source="{Binding CurrentImage.Source}"
                 HorizontalAlignment="Center" 
                 Stretch="UniformToFill">
@@ -38,18 +50,24 @@
                     </core:EventTriggerBehavior>
                 </i:Interaction.Behaviors>
             </Image>
-            <TextBlock Text="{Binding Size}" Grid.Row="1" />
-            <TextBlock Text="{Binding Date}" Grid.Row="2" />
-            <TextBlock Text="{Binding Longitude}" Grid.Row="1" Grid.Column="1" />
-            <TextBlock Text="{Binding Latitude}" Grid.Row="2" Grid.Column="1" />
+            <StackPanel Grid.Row="1" x:Name="InformationStack" Orientation="Horizontal" Visibility="{Binding IsMessageVisible, Converter={StaticResource NegativeBoolToVisibilityConverter}}">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Size}" />
+                    <TextBlock Text="{Binding Date}" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="20,0,0,0" x:Name="LongitudeDetails" Text="{Binding Longitude}" />
+                    <TextBlock Margin="20,0,0,0" x:Name="LatitudeDetails" Text="{Binding Latitude}" />
+                </StackPanel>
+            </StackPanel>
         </Grid>
-        <TextBlock Text="{Binding Message}" Visibility="{Binding IsMessageVisible, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <TextBlock Text="{Binding Message}" TextWrapping="WrapWholeWords" Visibility="{Binding IsMessageVisible, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" />
     </Grid>
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Command="{Binding TakePhoto}" Icon="Camera" Label="Take new photo" />
             <AppBarButton Command="{Binding GoBack}" Icon="Back" Label="Go back" />
+            <AppBarButton Command="{Binding TakePhoto}" Icon="Camera" Label="Take new photo" />
             <AppBarButton Command="{Binding Share}" Icon="Send" Label="Share" />
         </CommandBar>
     </Page.BottomAppBar>

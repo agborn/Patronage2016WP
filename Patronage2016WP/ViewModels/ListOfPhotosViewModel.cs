@@ -8,9 +8,17 @@ namespace Patronage2016WP.ViewModels
 {
     public class ListOfPhotosViewModel : BaseObservableObject
     {
+        #region Private Fields
         private NavigationService navigationService = new NavigationService();
-        
         private ObservableCollection<ImageElement> listOfImages;
+        private string message;
+        private bool isMessageVisible = false;
+        private bool isDataLoading;
+        private RelayCommand<object> showDetailsOfSelectedImage;
+        private RelayCommand<object> loadPage;
+        #endregion
+
+        #region Public Properties
         public ObservableCollection<ImageElement> ListOfImages
         {
             get
@@ -24,7 +32,6 @@ namespace Patronage2016WP.ViewModels
             }
         }
 
-        private string message;
         public string Message
         {
             get
@@ -39,7 +46,6 @@ namespace Patronage2016WP.ViewModels
             }
         }
 
-        private bool isMessageVisible = false;
         public bool IsMessageVisible
         {
             get
@@ -53,7 +59,19 @@ namespace Patronage2016WP.ViewModels
             }
         }
 
-        private RelayCommand<object> showDetailsOfSelectedImage;
+        public bool IsDataLoading
+        {
+            get
+            {
+                return isDataLoading;
+            }
+            set
+            {
+                isDataLoading = value;
+                RaisePropertyChanged("IsDataLoading");
+            }
+        }
+
         public RelayCommand<object> ShowDetailsOfSelectedImage
         {
             get
@@ -62,7 +80,6 @@ namespace Patronage2016WP.ViewModels
             }
         }
 
-        private RelayCommand<object> loadPage;
         public RelayCommand<object> LoadPage
         {
             get
@@ -70,7 +87,9 @@ namespace Patronage2016WP.ViewModels
                 return loadPage ?? (loadPage = new RelayCommand<object>(LoadListOfImages));
             }
         }
+        #endregion
 
+        #region Private Methods
         private void GoToDetails(object obj)
         {
             var image = obj as ImageElement;
@@ -84,14 +103,20 @@ namespace Patronage2016WP.ViewModels
         {
             try
             {
-                await ImageManagementService.LoadCollectionOfImageElements();
-                ListOfImages = ImageManagementService.Images;
+                IsDataLoading = true;
+                await ImageManagementService.Instance.LoadCollectionOfImageElements();
+                ListOfImages = ImageManagementService.Instance.Images;
                 Message = string.Empty;
             }
             catch (Exception ex)
             {
                 Message = ex.Message;
             }
-        }
+            finally
+            {
+                IsDataLoading = false;
+            }
+        } 
+        #endregion
     }
 }

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Patronage2016WP.Views"
+    xmlns:localControls="using:Patronage2016WP.UserControls"
     xmlns:localconv="using:Patronage2016WP.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,17 +20,16 @@
     <Page.Resources>
         <localconv:ThumbnailToImageConverter x:Key="ThumbnailToImageConverter" />
         <localconv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <localconv:NegativeBoolToVisibilityConverter x:Key="NegativeBoolToVisibilityConverter" />
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
         <TextBlock Text="{Binding Message}" Visibility="{Binding IsMessageVisible, Converter={StaticResource BoolToVisibilityConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20,0,20,0" />
-        <ListView ItemsSource="{Binding ListOfImages}" Name="Images">
+        <ListView ItemsSource="{Binding ListOfImages}" Name="Images" Visibility="{Binding IsDataLoading, Converter={StaticResource NegativeBoolToVisibilityConverter}}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{Binding Thumbnail, Converter={StaticResource ThumbnailToImageConverter}}" />
-                        <TextBlock Text="{Binding Name}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </StackPanel>
+                    <localControls:ListOfPhotosTemplate />
                 </DataTemplate>
             </ListView.ItemTemplate>
             <i:Interaction.Behaviors>
@@ -38,5 +38,15 @@
                 </core:EventTriggerBehavior>
             </i:Interaction.Behaviors>
         </ListView>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Visibility="{Binding IsDataLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ProgressBar IsIndeterminate="True" Visibility="{Binding IsDataLoading}" />
+            <TextBlock Margin="0,10,0,0" Text="Images are loading..." />
+        </StackPanel>
     </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Command="{Binding LoadPage}" Icon="Refresh" Label="Refresh images" />
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

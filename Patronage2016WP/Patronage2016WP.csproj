@@ -104,9 +104,13 @@
     <Compile Include="Converters\NegativeBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="Model\ImageElement.cs" />
+    <Compile Include="Services\MessageDialogService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\ImageManagementService.cs" />
     <Compile Include="Services\ShareService.cs" />
+    <Compile Include="UserControls\ListOfPhotosTemplate.xaml.cs">
+      <DependentUpon>ListOfPhotosTemplate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\ImageDetailsViewModel.cs" />
     <Compile Include="ViewModels\ListOfPhotosViewModel.cs" />
     <Compile Include="Views\ListOfPhotosView.xaml.cs">
@@ -138,6 +142,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="UserControls\ListOfPhotosTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ListOfPhotosView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

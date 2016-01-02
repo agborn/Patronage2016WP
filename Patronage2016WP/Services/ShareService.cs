@@ -7,12 +7,17 @@ namespace Patronage2016WP.Services
 {
     public class ShareService
     {
+        #region Private Fields
         private static ShareService instance;
         private StorageFile image;
         private DataTransferManager dataTransferManagerForService;
+        #endregion
 
+        #region Private Constructor
         private ShareService() { }
+        #endregion
 
+        #region Public Properties
         public static ShareService Instance
         {
             get
@@ -26,13 +31,17 @@ namespace Patronage2016WP.Services
                 return instance;
             }
         }
+        #endregion
 
+        #region Public Methods
         public void Share(StorageFile file)
         {
             instance.image = file;
             DataTransferManager.ShowShareUI();
         }
+        #endregion
 
+        #region Private Methods
         private static async void ShareStorageItemsHandler(DataTransferManager sender, DataRequestedEventArgs e)
         {
             DataRequest request = e.Request;
@@ -50,6 +59,7 @@ namespace Patronage2016WP.Services
             {
                 deferral.Complete();
             }
-        }
+        } 
+        #endregion
     }
 }
