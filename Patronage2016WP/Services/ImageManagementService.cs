@@ -1,4 +1,5 @@
-﻿using Patronage2016WP.Model;
+﻿using Patronage2016WP.Interfaces;
+using Patronage2016WP.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,11 +13,11 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Patronage2016WP.Services
 {
-    public class ImageManagementService
+    public class ImageManagementService : IImageManagementService
     {
         #region Fields
         public ObservableCollection<ImageElement> Images;
-        private static ImageManagementService instance; 
+        private static ImageManagementService _instance; 
         #endregion
 
         #region Private Constructor
@@ -28,12 +29,12 @@ namespace Patronage2016WP.Services
         {
             get
             {
-                if (instance == null)
+                if (_instance == null)
                 {
-                    instance = new ImageManagementService();
-                    instance.Images = new ObservableCollection<ImageElement>();
+                    _instance = new ImageManagementService();
+                    _instance.Images = new ObservableCollection<ImageElement>();
                 }
-                return instance;
+                return _instance;
             }
         } 
         #endregion
@@ -46,7 +47,7 @@ namespace Patronage2016WP.Services
 
             await GetAllImages(storageImages, folder);
 
-            instance.Images.Clear();
+            _instance.Images.Clear();
 
             foreach (var image in storageImages)
             {

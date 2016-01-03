@@ -9,13 +9,13 @@ namespace Patronage2016WP.ViewModels
     public class ListOfPhotosViewModel : BaseObservableObject
     {
         #region Private Fields
-        private NavigationService navigationService = new NavigationService();
-        private ObservableCollection<ImageElement> listOfImages;
-        private string message;
-        private bool isMessageVisible = false;
-        private bool isDataLoading;
-        private RelayCommand<object> showDetailsOfSelectedImage;
-        private RelayCommand<object> loadPage;
+        private NavigationService _navigationService = new NavigationService();
+        private ObservableCollection<ImageElement> _listOfImages;
+        private string _message;
+        private bool _isMessageVisible = false;
+        private bool _isDataLoading;
+        private RelayCommand<object> _showDetailsOfSelectedImage;
+        private RelayCommand<object> _loadPage;
         #endregion
 
         #region Public Properties
@@ -23,11 +23,11 @@ namespace Patronage2016WP.ViewModels
         {
             get
             {
-                return listOfImages ?? new ObservableCollection<ImageElement>();
+                return _listOfImages ?? new ObservableCollection<ImageElement>();
             }
             set
             {
-                listOfImages = value;
+                _listOfImages = value;
                 RaisePropertyChanged("ListOfImages");
             }
         }
@@ -36,13 +36,13 @@ namespace Patronage2016WP.ViewModels
         {
             get
             {
-                return message;
+                return _message;
             }
             set
             {
-                message = value;
+                _message = value;
                 RaisePropertyChanged("Message");
-                IsMessageVisible = !string.IsNullOrEmpty(message);
+                IsMessageVisible = !string.IsNullOrEmpty(_message);
             }
         }
 
@@ -50,11 +50,11 @@ namespace Patronage2016WP.ViewModels
         {
             get
             {
-                return isMessageVisible;
+                return _isMessageVisible;
             }
             set
             {
-                isMessageVisible = value;
+                _isMessageVisible = value;
                 RaisePropertyChanged("IsMessageVisible");
             }
         }
@@ -63,11 +63,11 @@ namespace Patronage2016WP.ViewModels
         {
             get
             {
-                return isDataLoading;
+                return _isDataLoading;
             }
             set
             {
-                isDataLoading = value;
+                _isDataLoading = value;
                 RaisePropertyChanged("IsDataLoading");
             }
         }
@@ -76,7 +76,7 @@ namespace Patronage2016WP.ViewModels
         {
             get
             {
-                return showDetailsOfSelectedImage ?? (showDetailsOfSelectedImage = new RelayCommand<object>(GoToDetails));
+                return _showDetailsOfSelectedImage ?? (_showDetailsOfSelectedImage = new RelayCommand<object>(GoToDetails));
             }
         }
 
@@ -84,7 +84,7 @@ namespace Patronage2016WP.ViewModels
         {
             get
             {
-                return loadPage ?? (loadPage = new RelayCommand<object>(LoadListOfImages));
+                return _loadPage ?? (_loadPage = new RelayCommand<object>(LoadListOfImages));
             }
         }
         #endregion
@@ -95,7 +95,7 @@ namespace Patronage2016WP.ViewModels
             var image = obj as ImageElement;
             if (image != null)
             {
-                navigationService.Navigate(typeof(ImageDetailsView), image);
+                _navigationService.Navigate(typeof(ImageDetailsView), image);
             }
         }
 

@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using Patronage2016WP.Interfaces;
+using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Storage;
 
 namespace Patronage2016WP.Services
 {
-    public class ShareService
+    public class ShareService : IShareService
     {
         #region Private Fields
-        private static ShareService instance;
-        private StorageFile image;
-        private DataTransferManager dataTransferManagerForService;
+        private static ShareService _instance;
+        private StorageFile _image;
+        private DataTransferManager _dataTransferManagerForService;
         #endregion
 
         #region Private Constructor
@@ -22,13 +23,13 @@ namespace Patronage2016WP.Services
         {
             get
             {
-                if (instance == null)
+                if (_instance == null)
                 {
-                    instance = new ShareService();
-                    instance.dataTransferManagerForService = DataTransferManager.GetForCurrentView();
-                    instance.dataTransferManagerForService.DataRequested += new TypedEventHandler<DataTransferManager, DataRequestedEventArgs>(ShareStorageItemsHandler);
+                    _instance = new ShareService();
+                    _instance._dataTransferManagerForService = DataTransferManager.GetForCurrentView();
+                    _instance._dataTransferManagerForService.DataRequested += new TypedEventHandler<DataTransferManager, DataRequestedEventArgs>(ShareStorageItemsHandler);
                 }
-                return instance;
+                return _instance;
             }
         }
         #endregion
@@ -36,7 +37,7 @@ namespace Patronage2016WP.Services
         #region Public Methods
         public void Share(StorageFile file)
         {
-            instance.image = file;
+            _instance._image = file;
             DataTransferManager.ShowShareUI();
         }
         #endregion
@@ -52,7 +53,7 @@ namespace Patronage2016WP.Services
             try
             {
                 List<IStorageItem> storageItems = new List<IStorageItem>();
-                storageItems.Add(instance.image);
+                storageItems.Add(_instance._image);
                 request.Data.SetStorageItems(storageItems);
             }
             finally

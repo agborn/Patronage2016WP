@@ -103,6 +103,9 @@
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\NegativeBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ThumbnailToImageConverter.cs" />
+    <Compile Include="Interfaces\IImageManagementService.cs" />
+    <Compile Include="Interfaces\INavigationService.cs" />
+    <Compile Include="Interfaces\IShareService.cs" />
     <Compile Include="Model\ImageElement.cs" />
     <Compile Include="Services\MessageDialogService.cs" />
     <Compile Include="Services\NavigationService.cs" />
