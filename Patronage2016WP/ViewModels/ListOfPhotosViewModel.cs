@@ -92,7 +92,7 @@ namespace Patronage2016WP.ViewModels
         #region Private Methods
         private void GoToDetails(object obj)
         {
-            var image = obj as ImageElement;
+            ImageElement image = obj as ImageElement;
             if (image != null)
             {
                 _navigationService.Navigate(typeof(ImageDetailsView), image);

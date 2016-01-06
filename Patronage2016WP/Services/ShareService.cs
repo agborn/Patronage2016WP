@@ -43,15 +43,18 @@ namespace Patronage2016WP.Services
         #endregion
 
         #region Private Methods
-        private static async void ShareStorageItemsHandler(DataTransferManager sender, DataRequestedEventArgs e)
+        private static void ShareStorageItemsHandler(DataTransferManager sender, DataRequestedEventArgs e)
         {
             DataRequest request = e.Request;
             request.Data.Properties.Title = "Share Image";
-
             DataRequestDeferral deferral = request.GetDeferral();
 
             try
             {
+                var image = ImageManagementService.Instance.CreateRandomAccessStreamReferenceFromImage(_instance._image);
+                request.Data.Properties.Thumbnail = image;
+                request.Data.SetBitmap(image);
+
                 List<IStorageItem> storageItems = new List<IStorageItem>();
                 storageItems.Add(_instance._image);
                 request.Data.SetStorageItems(storageItems);

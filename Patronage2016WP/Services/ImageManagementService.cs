@@ -8,6 +8,7 @@ using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
 using Windows.System.Profile;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -58,15 +59,15 @@ namespace Patronage2016WP.Services
         public async Task AddNewImageElementToCollection(StorageFile image)
         {
             var stream = await image.OpenReadAsync();
-            var bitmapImage = new BitmapImage();
+            BitmapImage bitmapImage = new BitmapImage();
             bitmapImage.SetSource(stream);
 
             StorageItemThumbnail thumbnail = await image.GetThumbnailAsync(ThumbnailMode.PicturesView);
 
             ImageProperties imageProperties = await image.Properties.GetImagePropertiesAsync();
-            var date = imageProperties.DateTaken.LocalDateTime.Year.ToString() == "1601" ? image.DateCreated.LocalDateTime : imageProperties.DateTaken.LocalDateTime;
-            double lat = imageProperties.Latitude.HasValue ? imageProperties.Latitude.Value : 0;
-            double lon = imageProperties.Longitude.HasValue ? imageProperties.Longitude.Value : 0;
+            DateTime date = imageProperties.DateTaken.LocalDateTime.Year.ToString() == "1601" ? image.DateCreated.LocalDateTime : imageProperties.DateTaken.LocalDateTime;
+            double lat = imageProperties.Latitude.HasValue ? imageProperties.Latitude.Value : 0.00;
+            double lon = imageProperties.Longitude.HasValue ? imageProperties.Longitude.Value : 0.00;
 
             Images.Add(new ImageElement
             {
@@ -85,11 +86,11 @@ namespace Patronage2016WP.Services
         public async Task TakeNewPhoto()
         {
             string device = GetDeviceInfo();
-            var file = await OpenCameraAndTakePicture();
+            StorageFile file = await OpenCameraAndTakePicture();
 
             if (file != null)
             {
-                var renamedFile = await RenamePhoto(file, device);
+                StorageFile renamedFile = await RenamePhoto(file, device);
                 await Task.Delay(TimeSpan.FromSeconds(2));
                 StorageFile savedFile = null;
                 if (device == "Windows.Desktop")
@@ -110,6 +111,13 @@ namespace Patronage2016WP.Services
                     throw new Exception("New photo could not be saved.");
                 }
             }
+        }
+
+        public RandomAccessStreamReference CreateRandomAccessStreamReferenceFromImage(StorageFile image)
+        {
+            RandomAccessStreamReference reference = RandomAccessStreamReference.CreateFromFile(image);
+
+            return reference;
         }
         #endregion
 
@@ -137,11 +145,11 @@ namespace Patronage2016WP.Services
 
         private async Task<StorageFile> SaveFileOnDesktop(StorageFile file)
         {
-            var savePicker = new FileSavePicker();
+            FileSavePicker savePicker = new FileSavePicker();
             savePicker.FileTypeChoices.Add("JPEG-Image", new List<string>() { ".jpg" });
             savePicker.SuggestedSaveFile = file;
             savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            var savedFile = await savePicker.PickSaveFileAsync();
+            StorageFile savedFile = await savePicker.PickSaveFileAsync();
             
             CachedFileManager.DeferUpdates(savedFile);
             await file.MoveAndReplaceAsync(savedFile);
@@ -157,10 +165,10 @@ namespace Patronage2016WP.Services
 
         private async Task<StorageFile> SaveFileOnMobile(StorageFile file)
         {
-            var savePicker = new FolderPicker();
+            FolderPicker savePicker = new FolderPicker();
             savePicker.FileTypeFilter.Add(".jpg");
             savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            var savedFolder = await savePicker.PickSingleFolderAsync();
+            StorageFolder savedFolder = await savePicker.PickSingleFolderAsync();
             if (savedFolder != null)
             {
                 await file.MoveAsync(savedFolder);
@@ -173,16 +181,16 @@ namespace Patronage2016WP.Services
         private string GenerateDefaultFileName(string device)
         {
             string name = string.Empty;
-            var year = DateTime.Now.Year;
-            var month = DateTime.Now.Month;
-            var day = DateTime.Now.Day;
-            var hour = DateTime.Now.Hour;
-            var minute = DateTime.Now.Minute;
-            var second = DateTime.Now.Second;
-
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+            int day = DateTime.Now.Day;
+            int hour = DateTime.Now.Hour;
+            int minute = DateTime.Now.Minute;
+            int second = DateTime.Now.Second;
             string nameOfDevice = (device == "Windows.Desktop") ? "WIN" : "WP";
 
             name = string.Format("{0}_{1}_{2}_{3}_{4}.jpg", nameOfDevice, year + month + day, hour, minute, second);
+
             return name;
         }
 

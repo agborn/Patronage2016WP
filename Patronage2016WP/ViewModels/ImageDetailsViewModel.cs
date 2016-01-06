@@ -172,7 +172,7 @@ namespace Patronage2016WP.ViewModels
         private void LoadCurrentItem(object obj)
         {
             Message = string.Empty;
-            var image = obj as ImageElement;
+            ImageElement image = obj as ImageElement;
             if (image != null)
             {
                 CurrentImage = image;
