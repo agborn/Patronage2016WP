@@ -101,6 +101,7 @@
     <Compile Include="Common\BaseObservableObject.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\NegativeBoolConverter.cs" />
     <Compile Include="Converters\NegativeBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="Interfaces\IImageManagementService.cs" />

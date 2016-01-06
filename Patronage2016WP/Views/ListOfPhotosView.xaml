@@ -21,6 +21,7 @@
         <localconv:ThumbnailToImageConverter x:Key="ThumbnailToImageConverter" />
         <localconv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <localconv:NegativeBoolToVisibilityConverter x:Key="NegativeBoolToVisibilityConverter" />
+        <localconv:NegativeBoolConverter x:Key="NegativeBoolConverter" />
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -46,7 +47,7 @@
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Command="{Binding LoadPage}" Icon="Refresh" Label="Refresh images" />
+            <AppBarButton Command="{Binding LoadPage}" Icon="Refresh" IsEnabled="{Binding IsDataLoading, Converter={StaticResource NegativeBoolConverter}}" Label="Refresh images" />
         </CommandBar>
     </Page.BottomAppBar>
 </Page>

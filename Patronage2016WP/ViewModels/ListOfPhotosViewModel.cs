@@ -103,10 +103,17 @@ namespace Patronage2016WP.ViewModels
         {
             try
             {
-                IsDataLoading = true;
-                await ImageManagementService.Instance.LoadCollectionOfImageElements();
-                ListOfImages = ImageManagementService.Instance.Images;
-                Message = string.Empty;
+                if (!IsDataLoading)
+                {
+                    IsDataLoading = true;
+                    await ImageManagementService.Instance.LoadCollectionOfImageElements();
+                    ListOfImages = ImageManagementService.Instance.Images;
+                    Message = string.Empty;
+                }
+                else
+                {
+                    return;
+                }
             }
             catch (Exception ex)
             {
