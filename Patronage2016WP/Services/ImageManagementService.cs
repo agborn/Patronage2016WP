@@ -58,10 +58,6 @@ namespace Patronage2016WP.Services
 
         public async Task AddNewImageElementToCollection(StorageFile image)
         {
-            var stream = await image.OpenReadAsync();
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.SetSource(stream);
-
             StorageItemThumbnail thumbnail = await image.GetThumbnailAsync(ThumbnailMode.PicturesView);
 
             ImageProperties imageProperties = await image.Properties.GetImagePropertiesAsync();
@@ -73,7 +69,6 @@ namespace Patronage2016WP.Services
             {
                 File = image,
                 Name = image.Name.Substring(0, image.Name.IndexOf('.')),
-                Source = bitmapImage,
                 Thumbnail = thumbnail,
                 Height = (int)imageProperties.Height,
                 Width = (int)imageProperties.Width,
@@ -81,6 +76,15 @@ namespace Patronage2016WP.Services
                 Latitude = lat,
                 Longitude = lon
             });
+        }
+
+        public async Task<BitmapImage> GetBitmapImageFromStorageFile(StorageFile image)
+        {
+            var stream = await image.OpenReadAsync();
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.SetSource(stream);
+
+            return bitmapImage;
         }
 
         public async Task TakeNewPhoto()

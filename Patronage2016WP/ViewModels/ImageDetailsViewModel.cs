@@ -3,6 +3,7 @@ using Patronage2016WP.Model;
 using Patronage2016WP.Services;
 using System;
 using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Patronage2016WP.ViewModels
 {
@@ -11,6 +12,7 @@ namespace Patronage2016WP.ViewModels
         #region Private Fields
         private NavigationService _navigationService = new NavigationService();
         private ImageElement _currentImage;
+        private BitmapImage _currentBitmapImage;
         private string _message;
         private bool _isMessageVisible = false;
         private RelayCommand<object> _loadPage;
@@ -44,6 +46,19 @@ namespace Patronage2016WP.ViewModels
             {
                 ImageManagementService.Instance.Images = value;
                 RaisePropertyChanged("Images");
+            }
+        }
+
+        public BitmapImage CurrentBitmapImage
+        {
+            get
+            {
+                return _currentBitmapImage;
+            }
+            set
+            {
+                _currentBitmapImage = value;
+                RaisePropertyChanged("CurrentBitmapImage");
             }
         }
 
@@ -175,7 +190,7 @@ namespace Patronage2016WP.ViewModels
             ImageElement image = obj as ImageElement;
             if (image != null)
             {
-                CurrentImage = image;
+                LoadImage(image);
             }
             else
             {
@@ -202,8 +217,13 @@ namespace Patronage2016WP.ViewModels
                 nextIndex = 0;
             }
 
-            _currentImage = Images[nextIndex];
-            RefreshData();
+            LoadImage(Images[nextIndex]);
+        }
+
+        private async void LoadImage(ImageElement image)
+        {
+            CurrentImage = image;
+            CurrentBitmapImage = await ImageManagementService.Instance.GetBitmapImageFromStorageFile(image.File);
         }
 
         private void GobackToListView(object obj)

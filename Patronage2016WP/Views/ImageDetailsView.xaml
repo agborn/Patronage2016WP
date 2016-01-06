@@ -41,7 +41,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Image 
-                Source="{Binding CurrentImage.Source}"
+                Source="{Binding CurrentBitmapImage}"
                 HorizontalAlignment="Center" 
                 Stretch="UniformToFill">
                 <i:Interaction.Behaviors>
