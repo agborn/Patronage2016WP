@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Media.Capture;
+using System.Linq;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
@@ -90,6 +91,12 @@ namespace Patronage2016WP.Services
         public async Task TakeNewPhoto()
         {
             string device = GetDeviceInfo();
+            bool isCameraAvailable = await CanTakePhoto();
+            if (!isCameraAvailable)
+            {
+                throw new Exception("There is no camera to take a photo!");
+            }
+
             StorageFile file = await OpenCameraAndTakePicture();
 
             if (file != null)
@@ -138,6 +145,24 @@ namespace Patronage2016WP.Services
             StorageFile file = await dialog.CaptureFileAsync(CameraCaptureUIMode.Photo);
 
             return file;
+        }
+
+        private async Task<bool> CanTakePhoto()
+        {
+            bool isCamera = false;
+            var devices = await Windows.Devices.Enumeration.DeviceInformation.FindAllAsync(Windows.Devices.Enumeration.DeviceClass.VideoCapture);
+
+            if (devices.Count < 1)
+            {
+                return false;
+            }
+            var enabledDevide = devices.FirstOrDefault(x => x.IsEnabled == true);
+            if (enabledDevide != null)
+            {
+                isCamera = true;
+            }
+
+            return isCamera;
         }
 
         private async Task<StorageFile> RenamePhoto(StorageFile file, string device)
