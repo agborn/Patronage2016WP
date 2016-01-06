@@ -239,6 +239,5 @@ namespace Patronage2016WP.Services
             }
         }  
         #endregion
-
     }
 }
